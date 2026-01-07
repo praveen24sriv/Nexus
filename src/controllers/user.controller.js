@@ -4,19 +4,24 @@ import {User} from "../models/user.model.js" // from mongoose
 import { uploadOnCloudinary } from "../utils/Cloudinary.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 
-const generateAccessAndRefreshTokens= async(userId)=>{
+import mongoose from "mongoose"
+import jwt from "jsonwebtoken"
+
+
+const generateAccessAndRefreshTokens = async(userId) =>{
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
-        user.refreshToken=refreshToken
-        await user.save({validateBeforeSave:false})
-        
-        return{accessToken,refreshToken}
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return {accessToken, refreshToken}
+
 
     } catch (error) {
-        throw new ApiError(500,"something went wrong while generating access and refresh token")
+        throw new ApiError(500, "Something went wrong while generating refresh and access token")
     }
 }
 
@@ -122,8 +127,9 @@ const loginUser = asyncHandler( async (req,res)=>{
     }
 
 
-    const { accessToken,refreshToken }=await //5th step
-    generateAccessAndRefreshTokens(user._id)
+    const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
+
+    //5th step
 
     
     const loggedInUser= await User.findById(user._id).select(
