@@ -10,4 +10,11 @@ app.use(express.urlencoded({ extended: true,limit: '16kb'}));// for url requests
 app.use(express.static('public')); // for static files
 app.use(cookieParser()); // for parsing cookies
 
+//routes import
+import userRouter from './routes/user.routes.js'
+
+//routes declaration
+app.use("/api/v1/users",userRouter); //users is prefix
+
+
 export default app;
