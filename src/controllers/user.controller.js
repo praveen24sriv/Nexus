@@ -106,7 +106,7 @@ const loginUser = asyncHandler( async (req,res)=>{
        6)send cookie.  */
 
 
-    const {email,username,password} = req.body//1st step
+    const {username, email, password} = req.body //1st step
 
 
     if(!(username || email)){                       //2nd step
