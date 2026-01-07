@@ -156,30 +156,33 @@ const loginUser = asyncHandler( async (req,res)=>{
 
 })
 
-const logoutUser = asyncHandler(async (req,res)=>{
+const logoutUser = asyncHandler(async(req, res) => {
     await User.findByIdAndUpdate(
-        req.praveen._id,
+        req.user._id,
         {
-            $set:{
-                refreshToken:undefined //step 1 : set refresh token undefined 
+            $unset: {
+                refreshToken: 1 // this removes the field from document
             }
         },
         {
-            new:true
+            new: true
         }
     )
-    
-    const options ={  //option->object
-        httpOnly:true,
-        secure:true
-    }
-    return res
-    .status(200)
-    .clearCookie("accessToken",options)
-    .clearCookie("refreshToken",options)
-    .json(new ApiResponse(200,{},"User logged out"))
 
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+   return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"))
 })
+
+
+ 
 
 export {
     registerUser,

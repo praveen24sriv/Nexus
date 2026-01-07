@@ -10,13 +10,13 @@ const userSchema = new Schema(
             unique: true,
             lowercase: true,
             trim: true, 
-            index: true
+            index: true //for optimized search
         },
         email: {
             type: String,
             required: true,
             unique: true,
-            lowecase: true,
+            lowercase: true,
             trim: true, 
         },
         fullName: {
