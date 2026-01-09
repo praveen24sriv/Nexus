@@ -242,7 +242,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
     return res.status(200)
-    .json(200,req.praveen,"current user fetched successfully")
+    .json(new ApiResponse(200,req.praveen,"current user fetched successfully"))
     
 })
 
@@ -395,7 +395,7 @@ const getUserChannelProfile= asyncHandler(async(req,res)=>{
 
 })
 
-const getWatchHistory = asyncHandler(async(req,res)=>{
+const getWatchHistory = asyncHandler(async(req,res)=> {
     const user = await User.aggregate([
         {
             $match:{ //as normally _id is string , mongoose converts it to object id
@@ -412,7 +412,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
                     {
                         $lookup:{
                             from:"users",
-                            localField:"ownwer",
+                            localField:"owner",
                             foreignField:"_id",
                             as:"owner",
                             pipeline:[
@@ -435,9 +435,6 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
                     }
                 ]
             }
-        },
-        {
-
         }
     ])
 
