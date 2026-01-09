@@ -389,15 +389,70 @@ const getUserChannelProfile= asyncHandler(async(req,res)=>{
     .status(200)
     .json(new ApiResponse(
         200,
-        channel[0],
+        channel[0],  // first value of array for data ( in aggr pipelines)
         "User channel fetched successfully"
     ))
 
 })
 
 const getWatchHistory = asyncHandler(async(req,res)=>{
+    const user = await User.aggregate([
+        {
+            $match:{ //as normally _id is string , mongoose converts it to object id
+                _id: new mongoose.Types.ObjectId(req.praveen._id) //but aggr pipelines codes directly goes to mongo so here we are explicitly converting.
+            }
+        },
+        {
+            $lookup:{
+                from:"videos", // Video --> videos
+                localField:"watchHistory",
+                foreignField:"_id",
+                as:"watchHistory",
+                pipeline:[    // sub pipeline or nested pipeline
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"ownwer",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        fullName:1,
+                                        username:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    { // because now owner sends an array , so array sahi krra hu idhr
+                        $addFields:{
+                            owner:{
+                                $first:"$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            user[0].watchHistory, // first value of array for data ( in aggr pipelines)
+            "watch history fetched successfully "
+        )
+    )
 
 })
+// aggregation pipeline returns array 
 
 export {
     registerUser,
