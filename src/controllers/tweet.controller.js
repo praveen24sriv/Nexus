@@ -13,7 +13,7 @@ const createTweet = asyncHandler(async (req, res) => {
 
     const tweet = await Tweet.create({
         content,
-        owner: req.praveen?._id,
+        owner: req.user?._id,
     });
 
     if (!tweet) {
@@ -43,7 +43,7 @@ const updateTweet = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Tweet not found");
     }
 
-    if (tweet?.owner.toString() !== req.praveen?._id.toString()) {
+    if (tweet?.owner.toString() !== req.user?._id.toString()) {
         throw new ApiError(400, "only owner can edit their tweet");
     }
 
@@ -143,7 +143,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
                 },
                 isLiked: {
                     $cond: {
-                        if: {$in: [req.praveen?._id, "$likeDetails.likedBy"]},
+                        if: {$in: [req.user?._id, "$likeDetails.likedBy"]},
                         then: true,
                         else: false
                     }

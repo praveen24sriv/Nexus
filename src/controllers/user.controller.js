@@ -157,7 +157,7 @@ const loginUser = asyncHandler( async (req,res)=>{
 
 const logoutUser = asyncHandler(async(req, res) => {
     await User.findByIdAndUpdate(
-        req.praveen._id,
+        req.user._id,
         {
             $unset: {
                 refreshToken: 1 // this removes the field from document
@@ -225,7 +225,7 @@ try {
 const changeCurrentPassword = asyncHandler(async(req,res)=>{
      const {oldPassword , newPassword}= req.body
 
-     const user = await User.findById(req.praveen?._id)
+     const user = await User.findById(req.user?._id)
 
      const isPasswordCorrect= await user.isPasswordCorrect(oldPassword)
      if(!isPasswordCorrect){
@@ -242,7 +242,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
     return res.status(200)
-    .json(new ApiResponse(200,req.praveen,"current user fetched successfully"))
+    .json(new ApiResponse(200,req.user,"current user fetched successfully"))
     
 })
 
@@ -252,7 +252,7 @@ const updateAccountDetails = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"All fields are required")
     }
     const user = await User.findByIdAndUpdate(
-        req.praveen?._id,
+        req.user?._id,
         {
             $set : {
                 fullName:fullName, //1
@@ -278,7 +278,7 @@ const updateUserAvatar=asyncHandler(async(req,res)=>{
     }
 
     const user = await User.findByIdAndUpdate(
-        req.praveen?._id,
+        req.user?._id,
         {
             $set:{
                 avatar:avatar.url
@@ -306,7 +306,7 @@ const updateUserCoverImage=asyncHandler(async(req,res)=>{
     }
 
     const user = await User.findByIdAndUpdate(
-        req.praveen?._id,
+        req.user?._id,
         {
             $set:{
                 coverImage:coverImage.url
@@ -399,7 +399,7 @@ const getWatchHistory = asyncHandler(async(req,res)=> {
     const user = await User.aggregate([
         {
             $match:{ //as normally _id is string , mongoose converts it to object id
-                _id: new mongoose.Types.ObjectId(req.praveen._id) //but aggr pipelines codes directly goes to mongo so here we are explicitly converting.
+                _id: new mongoose.Types.ObjectId(req.user._id) //but aggr pipelines codes directly goes to mongo so here we are explicitly converting.
             }
         },
         {

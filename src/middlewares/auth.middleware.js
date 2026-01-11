@@ -20,7 +20,7 @@ try {
             throw new ApiError(401,"Invalid access")
         }
     
-        req.praveen=user // adding an object named praveen in req and giving it all data
+        req.user=user // adding an object named user in req and giving it all data
         next()
 } catch (error) {
     throw new ApiError(401,error?.message || "Invalid access token")
