@@ -1,4 +1,4 @@
-# 🎥Nexus - Video Hosting Backend
+# Nexus - Video Hosting Backend
 
 > A production-grade backend architecture for a video hosting platform similar to YouTube.
 
